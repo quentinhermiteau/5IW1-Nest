@@ -11,9 +11,9 @@ export interface User {
   name: string;
 }
 
-export interface FindAllQueryParams {
-  page: string;
-  limit: string;
+interface FindAllQueryParams {
+  page: number;
+  limit: number;
 }
 
 export interface CreateBody {
@@ -27,8 +27,8 @@ export class UsersService {
   findAll(queryParams: FindAllQueryParams): FindAllResponse {
     return {
       data: this.users,
-      page: +queryParams.page,
-      limit: +queryParams.limit,
+      page: queryParams.page,
+      limit: queryParams.limit,
     };
   }
 
