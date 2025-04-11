@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { CreditGuard } from './credits/credits.guard';
+import { EventsGateway } from './events/events.gateway';
 import { MoviesModule } from './movies/movies.module';
 import { PrismaService } from './prisma.service';
 import { UsersModule } from './users/users.module';
@@ -52,6 +53,7 @@ import { UsersModule } from './users/users.module';
       provide: APP_GUARD,
       useClass: CreditGuard,
     },
+    EventsGateway,
   ],
   exports: [PrismaService],
 })
