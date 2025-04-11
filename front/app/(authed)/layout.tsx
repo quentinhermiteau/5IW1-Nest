@@ -25,7 +25,7 @@ export default function AuthedLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarTrigger />
-      {children}
+      <div className="w-full">{children}</div>
     </SidebarProvider>
   );
 }

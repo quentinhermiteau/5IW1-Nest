@@ -6,6 +6,7 @@ export interface Movie {
   description: string;
   releaseDate: Date;
   grade: number;
+  image?: string;
   createdAt: Date;
   updatedAt: Date;
 

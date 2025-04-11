@@ -1,40 +1,64 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 
+interface CreateMovie {
+  title: string;
+  description: string;
+  releaseDate: Date;
+  grade: number;
+  image?: string;
+  categories: number[];
+  actors: number[];
+  directors: number[];
+}
 @Injectable()
 export class MoviesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createMovieDto: CreateMovieDto) {
-    const { poster } = createMovieDto;
-
+  async create(data: CreateMovie, file: Express.Multer.File) {
     const client = new S3Client({
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-      },
-      region: 'eu-west-1',
       endpoint: 'http://localhost:9000',
+      region: 'eu-west-1',
+      forcePathStyle: true,
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+      },
     });
 
-    try {
-      await client.send(
-        new PutObjectCommand({
-          Bucket: 'images',
-          Key: poster.originalname,
-          Body: poster.buffer,
-          ContentType: poster.mimetype,
-        }),
-      );
+    const key = file.originalname;
+    await client.send(
+      new PutObjectCommand({
+        Bucket: 'images',
+        Key: key,
+        Body: file.buffer,
+      }),
+    );
 
-      return 'This action adds a new movie';
-    } catch (error) {
-      console.error('Error uploading file to S3', error);
-      throw error;
-    }
+    return this.prisma.movies.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        releaseDate: data.releaseDate,
+        grade: data.grade,
+        image: key,
+        categories: {
+          connect: data?.categories?.map((id) => ({ id })),
+        },
+        actors: {
+          create: data?.actors?.map((actorId) => ({
+            actor: { connect: { id: actorId } },
+          })),
+        },
+        directors: {
+          create: data?.directors?.map((directorId) => ({
+            director: { connect: { id: directorId } },
+          })),
+        },
+      },
+    });
   }
 
   findAll() {

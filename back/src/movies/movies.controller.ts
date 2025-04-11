@@ -26,8 +26,11 @@ export class MoviesController {
     type: CreateMovieDto,
   })
   @Post()
-  create(@Body() createMovieDto: CreateMovieDto, @UploadedFile() file) {
-    return this.moviesService.create({ ...createMovieDto, poster: file });
+  create(
+    @Body() createMovieDto: CreateMovieDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.moviesService.create(createMovieDto, file);
   }
 
   @Get()

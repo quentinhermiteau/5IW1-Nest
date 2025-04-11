@@ -10,6 +10,7 @@ export interface JwtPayload {
   email: string;
   firstName: string;
   lastName: string;
+  credits: number;
 }
 
 @Injectable()
@@ -32,6 +33,7 @@ export class AuthService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      credits: user.credits,
     };
 
     return {

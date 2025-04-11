@@ -19,6 +19,7 @@ model User {
   password  String
   firstName String
   lastName  String
+  credits   Int      @default(10)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -29,6 +30,7 @@ model Movies {
   description String
   releaseDate DateTime
   grade       Float
+  image       String?
   categories  Categories[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
